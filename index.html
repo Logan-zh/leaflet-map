@@ -15,18 +15,31 @@
       crossorigin=""
     ></script>
     <style>
+      .container {
+        display: flex;
+      }
       #map {
-        height: 580px;
+        height: 680px;
+        width: 80%;
       }
       .marker-img {
-        max-width: 100px;
-        max-height: 100px;
+        max-width: 50px;
+        max-height: 50px;
+      }
+      #attractions {
+        display: flex;
+        flex-direction: column;
+        padding: 1rem;
+        gap: 1rem;
       }
     </style>
-    <title>Map</title>
+    <title>Taiwan Map</title>
   </head>
   <body>
-    <div id="map"></div>
+    <div class="container">
+      <div id="map"></div>
+      <div id="attractions"></div>
+    </div>
     <script>
       window.onload = function () {
         let Attractions = [
@@ -50,17 +63,28 @@
         }).addTo(map);
 
         Array.prototype.setAttractions = function () {
-          this.forEach((attraction) =>
-            L.marker(attraction.latlng)
+          this.forEach((attraction) => {
+            attraction.target = L.marker(attraction.latlng)
               .addTo(map)
               .bindPopup(
-                `${attraction.name} <br/><img class='marker-img' src='${attraction.img}'>`
-              )
-              .openPopup()
-          );
+                `${attraction.name}<br/><img class='marker-img' src='${attraction.img}'>`
+              );
+          });
         };
-        
+
+        Array.prototype.setButton = function () {
+          let operationArea = document.getElementById("attractions");
+          this.forEach((attraction) => {
+            let button = document.createElement("button");
+            button.innerText = attraction.name;
+            button.type = "button";
+            button.onclick = () => attraction.target.openPopup();
+            operationArea.append(button);
+          });
+        };
+
         Attractions.setAttractions();
+        Attractions.setButton();
       };
     </script>
   </body>
